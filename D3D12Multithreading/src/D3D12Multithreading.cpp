@@ -16,6 +16,7 @@
 #include "imgui/imgui_impl_win32.h"
 #include "imgui/imgui_impl_dx12.h"
 #include "GPUInspector.h"
+#include "PDHBrowser.h"
 
 #define IMGUI_ENABLED
 
@@ -99,6 +100,8 @@ void D3D12Multithreading::OnInit()
     LoadImGui();
 
     gpuList = QueryAdapters(true);
+
+    pdhList = QueryPDHObjects();
 }
 
 
@@ -775,6 +778,9 @@ void D3D12Multithreading::OnUpdate()
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
+    bool popen = TRUE;
+    ImGui::ShowDemoWindow(&popen);
+
     //ImGuiIO& io = ImGui::GetIO();
     //io.WantCaptureMouse = true;
     ImVec2 v(0, 0);
@@ -1250,6 +1256,68 @@ void D3D12Multithreading::OnUpdate()
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();
+        }
+        ImGui::End();
+    }
+
+    if (m_showPdhBrowser && pdhList.size() > 0)
+    {
+        v = ImVec2(300, 0);
+        s = ImVec2(700, static_cast<float>(m_height));
+
+        ImGui::Begin("PDH Browser");
+        ImGui::SetWindowPos(v);
+        ImGui::SetWindowSize(s);
+        ImGui::Separator();
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+        ImGui::PopStyleVar();
+        ImGui::SameLine();
+        ImGui::Separator();
+        for (auto pdhObject : pdhList)
+        {
+            std::wstring wideString(pdhObject->objectName);
+            std::string display(wideString.begin(), wideString.end());
+
+            const bool nodeOpen = ImGui::TreeNodeEx(display.c_str());
+            if (nodeOpen)
+            {
+                ImGui::TreePop();
+                ImGui::Separator();
+                if (!pdhObject->instanceList.empty())
+                {
+                    for (PDHInstance* instance : pdhObject->instanceList)
+                    {
+                        std::wstring wideString(instance->name);
+                        std::string display(wideString.begin(), wideString.end());
+                        const bool subNodeOpen = ImGui::TreeNodeEx(display.c_str());
+                        if (subNodeOpen)
+                        {
+                            ImGui::TreePop();
+                            for (PDHCounter* counter : instance->counterList)
+                            {
+                                bool currSelected = false;
+
+                                ImGui::Indent();
+                                std::wstring wideString(counter->name);
+                                std::string display(wideString.begin(), wideString.end());
+                                if (counter->isSelected)
+                                {
+                                    currSelected = TRUE;
+                                }
+                                if (ImGui::Selectable(display.c_str(), &counter->isSelected))
+                                {
+                                    queryList.push_back(counter);
+                                    if (currSelected)
+                                        counter->isSelected = FALSE;
+                                }
+                                ImGui::Unindent();
+                            }
+                        }
+                    }
+                }
+                ImGui::Separator();
+            }
+
         }
         ImGui::End();
     }

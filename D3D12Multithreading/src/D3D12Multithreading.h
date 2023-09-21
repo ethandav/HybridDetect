@@ -29,6 +29,8 @@ using Microsoft::WRL::ComPtr;
 
 class FrameResource;
 struct GPU_DEVICE_INFO;
+struct PDHNode;
+struct PDHCounter;
 
 struct LightState
 {
@@ -153,11 +155,14 @@ private:
     // Special Sauce
 	PROCESSOR_INFO m_procInfo;
     std::list<GPU_DEVICE_INFO*> gpuList;
+    std::list<PDHNode*> pdhList;
+    std::list<PDHCounter*> queryList;
     void LoadImGui();
-    bool m_showMasks = true;
-    bool m_showCores = true;
-    bool m_showCaches = true;
+    bool m_showMasks = false;
+    bool m_showCores = false;
+    bool m_showCaches = false;
     bool m_showSparklines = false;
     bool m_showGpuInspector = false;
+    bool m_showPdhBrowser = true;
 
 };
