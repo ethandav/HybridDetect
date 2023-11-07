@@ -1219,8 +1219,8 @@ void D3D12Multithreading::OnUpdate()
         std::advance(it, selectedSet);
         GPU_DEVICE_INFO* gpu = *it;
 
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Vendor ID                  %d", gpu->adapter_vendor);
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Device ID                  %d", gpu->device_id);
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Vendor ID                  0x%s - %s", IdToHex(gpu->adapter_vendor).c_str(), DisplayVendorName(gpu->adapter_vendor).c_str());
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Device ID                  0x%s", IdToHex(gpu->device_id).c_str());
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Video Memory               %s", DisplayMem(gpu->adapter_video_memory).c_str());
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Dedicated Memory           %s", DisplayMem(gpu->adapter_dedicated_memory).c_str());
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Shared Memory              %s", DisplayMem(gpu->adapter_shared_memory).c_str());

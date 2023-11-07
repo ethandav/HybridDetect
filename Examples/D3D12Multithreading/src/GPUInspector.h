@@ -612,3 +612,32 @@ std::string DisplayMem(long long bytes)
         display << std::fixed << std::setprecision(2) << GB << " GB";
     return display.str();
 }
+
+std::string IdToHex(long long id)
+{
+    std::stringstream ss;
+    ss << std::hex << id;
+    return ss.str();
+}
+
+std::string DisplayVendorName(long long vendorId)
+{
+    std::string ret;
+    switch (vendorId)
+    {
+    case 32902:
+        ret = "Intel Corporation";
+        break;
+    case 4290:
+        ret = "NVIDIA";
+        break;
+    case 4098:
+        ret = "AMD";
+        break;
+    default:
+        ret = "Invalid Vendor ID";
+        break;
+    }
+
+    return ret;
+}
